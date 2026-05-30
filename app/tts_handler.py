@@ -2,12 +2,11 @@ import asyncio
 import edge_tts
 import io
 
-async def synthesize_speech_async(text: str) -> bytes:
+async def _synthesize(text: str) -> bytes:
     communicate = edge_tts.Communicate(
         text=text,
         voice="en-US-GuyNeural",
-        rate="+5%",
-        pitch="+0Hz"
+        rate="+5%"
     )
     buffer = io.BytesIO()
     async for chunk in communicate.stream():
@@ -17,4 +16,13 @@ async def synthesize_speech_async(text: str) -> bytes:
     return buffer.read()
 
 def synthesize_speech(text: str) -> bytes:
-    return asyncio.run(synthesize_speech_async(text))
+    try:
+        loop = asyncio.get_event_loop()
+        if loop.is_running():
+            import concurrent.futures
+            with concurrent.futures.ThreadPoolExecutor() as pool:
+                future = pool.submit(asyncio.run, _synthesize(text))
+                return future.result()
+        return loop.run_until_complete(_synthesize(text))
+    except Exception:
+        asyncio.run(_synthesize(text))
