@@ -93,7 +93,7 @@
 </head>
 <body>
   <h1>Hey, I'm Shyamal 👋</h1>
-  <p class="subtitle">Hold the orb to speak — or click a question below.</p>
+ <p class="subtitle">Click the orb to start speaking — click again to stop.</p>
 
   <div class="orb" id="orb">🎙️</div>
   <div id="status">Press and hold to ask a question</div>
@@ -112,7 +112,7 @@
   <script>
     const orb = document.getElementById('orb');
     const status = document.getElementById('status');
-    let mediaRecorder, chunks = [];
+    let mediaRecorder, chunks = [], recording = false;
 
     async function askText(question) {
       setThinking();
@@ -130,11 +130,19 @@
       }
     }
 
+    async function toggleRecording() {
+      if (!recording) {
+        await startRecording();
+      } else {
+        stopRecording();
+      }
+    }
+
     async function startRecording() {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus') 
-          ? 'audio/webm;codecs=opus' 
+        const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+          ? 'audio/webm;codecs=opus'
           : MediaRecorder.isTypeSupported('audio/webm')
           ? 'audio/webm'
           : 'audio/ogg';
@@ -143,9 +151,10 @@
         mediaRecorder.ondataavailable = e => chunks.push(e.data);
         mediaRecorder.onstop = sendAudio;
         mediaRecorder.start();
+        recording = true;
         orb.classList.add('recording');
         orb.textContent = '⏹️';
-        status.textContent = 'Listening... release to send';
+        status.textContent = 'Recording... click again to stop';
       } catch (err) {
         status.textContent = 'Mic access denied — check browser permissions.';
       }
@@ -156,6 +165,7 @@
         mediaRecorder.stop();
         mediaRecorder.stream.getTracks().forEach(t => t.stop());
       }
+      recording = false;
       setThinking();
     }
 
@@ -178,7 +188,7 @@
       const audio = new Audio(url);
       orb.textContent = '🔊';
       status.textContent = 'Speaking...';
-      audio.onended = () => reset('Press and hold to ask again');
+      audio.onended = () => reset('Click the orb to ask another question');
       audio.play();
     }
 
@@ -193,12 +203,10 @@
       orb.classList.remove('recording', 'thinking');
       orb.textContent = '🎙️';
       status.textContent = msg;
+      recording = false;
     }
 
-    orb.addEventListener('mousedown', startRecording);
-    orb.addEventListener('mouseup', stopRecording);
-    orb.addEventListener('touchstart', e => { e.preventDefault(); startRecording(); });
-    orb.addEventListener('touchend', e => { e.preventDefault(); stopRecording(); });
+    orb.addEventListener('click', toggleRecording);
   </script>
 </body>
 </html>
