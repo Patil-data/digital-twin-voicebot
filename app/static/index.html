@@ -3,119 +3,431 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Digital Twin — Shyamal Patil</title>
+  <title>Shyamal's Digital Twin</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
+
     body {
       min-height: 100vh;
-      background: #0f0f0f;
+      background: #050510;
       color: #f0f0f0;
-      font-family: 'Segoe UI', sans-serif;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 0;
+      overflow-x: hidden;
+    }
+
+    /* HERO SECTION */
+    .hero {
+      width: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem;
+      padding: 60px 20px 40px;
+      position: relative;
+      background: radial-gradient(ellipse at 50% 0%, #1a1a6e55 0%, transparent 70%);
     }
-    h1 { font-size: 1.8rem; margin-bottom: 0.4rem; }
-    p.subtitle {
-      color: #888;
-      font-size: 0.95rem;
-      margin-bottom: 2.5rem;
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(99, 102, 241, 0.15);
+      border: 1px solid rgba(99, 102, 241, 0.3);
+      border-radius: 100px;
+      padding: 6px 16px;
+      font-size: 0.75rem;
+      color: #a5b4fc;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 24px;
+    }
+
+    .badge span { width: 6px; height: 6px; background: #6366f1; border-radius: 50%; display: inline-block; animation: blink 1.5s infinite; }
+
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+
+    .hero h1 {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 700;
       text-align: center;
+      line-height: 1.1;
+      margin-bottom: 16px;
+      background: linear-gradient(135deg, #ffffff 0%, #a5b4fc 50%, #818cf8 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
-    .orb {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: radial-gradient(circle, #4f8ef7, #1a1aff);
-      box-shadow: 0 0 40px #4f8ef7aa;
-      cursor: pointer;
-      transition: transform 0.2s, box-shadow 0.2s;
+
+    .hero p {
+      font-size: 1rem;
+      color: #6b7280;
+      text-align: center;
+      max-width: 420px;
+      line-height: 1.6;
+      margin-bottom: 8px;
+    }
+
+    .tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .tag {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 4px 12px;
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    /* DIVIDER */
+    .divider {
+      width: 100%;
+      max-width: 700px;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(99,102,241,0.3), transparent);
+      margin: 40px auto 0;
+    }
+
+    /* MAIN CONTENT */
+    .main {
+      width: 100%;
+      max-width: 700px;
+      padding: 40px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 40px;
+    }
+
+    /* ORB SECTION */
+    .orb-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .orb-wrapper {
+      position: relative;
+      width: 140px;
+      height: 140px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 2.5rem;
+    }
+
+    .orb-ring {
+      position: absolute;
+      inset: -12px;
+      border-radius: 50%;
+      border: 1px solid rgba(99,102,241,0.2);
+      animation: rotate 8s linear infinite;
+    }
+
+    .orb-ring::after {
+      content: '';
+      position: absolute;
+      top: -2px;
+      left: 50%;
+      width: 6px;
+      height: 6px;
+      background: #6366f1;
+      border-radius: 50%;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px #6366f1;
+    }
+
+    @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .orb {
+      width: 140px;
+      height: 140px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #4f46e5, #1e1b4b);
+      box-shadow: 0 0 40px rgba(99,102,241,0.4), 0 0 80px rgba(99,102,241,0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.8rem;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 1;
       user-select: none;
     }
+
+    .orb:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 60px rgba(99,102,241,0.6), 0 0 100px rgba(99,102,241,0.2), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+
     .orb.recording {
-      background: radial-gradient(circle, #f74f4f, #cc0000);
-      box-shadow: 0 0 60px #f74f4fcc;
-      transform: scale(1.1);
+      background: radial-gradient(circle at 35% 35%, #dc2626, #7f1d1d);
+      box-shadow: 0 0 60px rgba(220,38,38,0.5), 0 0 100px rgba(220,38,38,0.2);
+      animation: recordPulse 1s ease-in-out infinite;
     }
+
     .orb.thinking {
-      background: radial-gradient(circle, #f7c94f, #cc8800);
-      box-shadow: 0 0 50px #f7c94faa;
-      animation: pulse 1s infinite;
+      background: radial-gradient(circle at 35% 35%, #d97706, #78350f);
+      box-shadow: 0 0 60px rgba(217,119,6,0.5), 0 0 100px rgba(217,119,6,0.2);
+      animation: thinkPulse 1.2s ease-in-out infinite;
     }
-    @keyframes pulse {
-      0%, 100% { transform: scale(1.05); }
-      50% { transform: scale(1.12); }
+
+    .orb.speaking {
+      background: radial-gradient(circle at 35% 35%, #059669, #064e3b);
+      box-shadow: 0 0 60px rgba(5,150,105,0.5), 0 0 100px rgba(5,150,105,0.2);
+      animation: speakPulse 0.6s ease-in-out infinite;
     }
-    #status {
-      margin-top: 1.5rem;
-      font-size: 0.95rem;
-      color: #aaa;
-      min-height: 1.5rem;
-      text-align: center;
+
+    @keyframes recordPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.08);} }
+    @keyframes thinkPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+    @keyframes speakPulse { 0%,100%{transform:scale(1);} 50%{transform:scale(1.06);} }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 100px;
+      padding: 8px 20px;
+      font-size: 0.85rem;
+      color: #9ca3af;
+      min-width: 220px;
+      justify-content: center;
     }
-    .questions {
-      margin-top: 3rem;
-      max-width: 520px;
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4b5563;
+      transition: background 0.3s;
+    }
+
+    .status-dot.active { background: #6366f1; box-shadow: 0 0 6px #6366f1; }
+    .status-dot.recording { background: #ef4444; box-shadow: 0 0 6px #ef4444; animation: blink 0.8s infinite; }
+    .status-dot.thinking { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: blink 1s infinite; }
+    .status-dot.speaking { background: #10b981; box-shadow: 0 0 6px #10b981; animation: blink 0.6s infinite; }
+
+    /* QUESTIONS GRID */
+    .questions-section {
       width: 100%;
     }
-    .questions h2 {
-      font-size: 0.85rem;
+
+    .section-label {
+      font-size: 0.7rem;
       text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: #555;
-      margin-bottom: 1rem;
+      letter-spacing: 0.12em;
+      color: #4b5563;
+      margin-bottom: 14px;
+      text-align: center;
     }
-    .questions ul {
-      list-style: none;
+
+    .questions-grid {
       display: flex;
       flex-direction: column;
-      gap: 0.6rem;
+      gap: 10px;
     }
-    .questions ul li {
-      background: #1a1a1a;
-      border: 1px solid #2a2a2a;
-      border-radius: 8px;
-      padding: 0.65rem 1rem;
-      font-size: 0.88rem;
-      color: #bbb;
+
+    .q-btn {
+      width: 100%;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
       cursor: pointer;
-      transition: border-color 0.2s;
+      transition: all 0.2s ease;
+      text-align: left;
     }
-    .questions ul li:hover { border-color: #4f8ef7; color: #fff; }
-    .questions ul li.active { border-color: #f7c94f; color: #fff; }
+
+    .q-btn:hover {
+      background: rgba(99,102,241,0.08);
+      border-color: rgba(99,102,241,0.3);
+      transform: translateX(4px);
+    }
+
+    .q-num {
+      width: 28px;
+      height: 28px;
+      border-radius: 8px;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #818cf8;
+      flex-shrink: 0;
+    }
+
+    .q-text {
+      font-size: 0.88rem;
+      color: #d1d5db;
+      line-height: 1.4;
+    }
+
+    .q-arrow {
+      margin-left: auto;
+      color: #374151;
+      font-size: 1rem;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .q-btn:hover .q-arrow { color: #6366f1; transform: translateX(2px); }
+
+    /* TRANSCRIPT BOX */
+    .transcript-box {
+      width: 100%;
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.06);
+      border-radius: 12px;
+      padding: 16px 18px;
+      min-height: 60px;
+      display: none;
+    }
+
+    .transcript-box.visible { display: block; }
+
+    .transcript-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #4b5563;
+      margin-bottom: 8px;
+    }
+
+    .transcript-text {
+      font-size: 0.88rem;
+      color: #9ca3af;
+      line-height: 1.5;
+      font-style: italic;
+    }
+
+    /* FOOTER */
+    .footer {
+      width: 100%;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      padding: 20px;
+      text-align: center;
+      font-size: 0.75rem;
+      color: #374151;
+    }
+
+    .footer a { color: #4b5563; text-decoration: none; }
+    .footer a:hover { color: #6366f1; }
   </style>
 </head>
 <body>
-  <h1>Hey, I'm Shyamal 👋</h1>
- <p class="subtitle">Click the orb to start speaking — click again to stop.</p>
 
-  <div class="orb" id="orb">🎙️</div>
-  <div id="status">Press and hold to ask a question</div>
+  <!-- HERO -->
+  <div class="hero">
+    <div class="badge"><span></span> AI Digital Twin — Live</div>
+    <h1>Hey, I'm Shyamal 👋</h1>
+    <p>Ask me anything about my background, skills, and how I work. I'll answer just like the real me would.</p>
+    <div class="tags">
+      <div class="tag">⚡ Engineering Physics @ IIT ISM</div>
+      <div class="tag">🤖 AI Systems Builder</div>
+      <div class="tag">🔧 Backend Engineer</div>
+    </div>
+    <div class="divider"></div>
+  </div>
 
-  <div class="questions">
-    <h2>Or click a question</h2>
-    <ul>
-      <li onclick="askText('What should I know about your life story?')">What should I know about your life story?</li>
-      <li onclick="askText('What is your number one superpower?')">What's your #1 superpower?</li>
-      <li onclick="askText('What are your top three areas to grow in?')">What are your top 3 areas to grow in?</li>
-      <li onclick="askText('What misconception do coworkers have about you?')">What misconception do coworkers have about you?</li>
-      <li onclick="askText('How do you push your limits?')">How do you push your limits?</li>
-    </ul>
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- ORB -->
+    <div class="orb-section">
+      <div class="orb-wrapper">
+        <div class="orb-ring"></div>
+        <div class="orb" id="orb">🎙️</div>
+      </div>
+      <div class="status-pill">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="status">Click the orb to ask a question</span>
+      </div>
+    </div>
+
+    <!-- TRANSCRIPT -->
+    <div class="transcript-box" id="transcriptBox">
+      <div class="transcript-label">You asked</div>
+      <div class="transcript-text" id="transcriptText"></div>
+    </div>
+
+    <!-- QUESTIONS -->
+    <div class="questions-section">
+      <div class="section-label">Or tap a question below</div>
+      <div class="questions-grid">
+        <div class="q-btn" onclick="askText('What should I know about your life story?')">
+          <div class="q-num">01</div>
+          <div class="q-text">What should I know about your life story?</div>
+          <div class="q-arrow">→</div>
+        </div>
+        <div class="q-btn" onclick="askText('What is your number one superpower?')">
+          <div class="q-num">02</div>
+          <div class="q-text">What's your #1 superpower?</div>
+          <div class="q-arrow">→</div>
+        </div>
+        <div class="q-btn" onclick="askText('What are your top three areas to grow in?')">
+          <div class="q-num">03</div>
+          <div class="q-text">What are your top 3 areas to grow in?</div>
+          <div class="q-arrow">→</div>
+        </div>
+        <div class="q-btn" onclick="askText('What misconception do coworkers have about you?')">
+          <div class="q-num">04</div>
+          <div class="q-text">What misconception do coworkers have about you?</div>
+          <div class="q-arrow">→</div>
+        </div>
+        <div class="q-btn" onclick="askText('How do you push your limits?')">
+          <div class="q-num">05</div>
+          <div class="q-text">How do you push your boundaries and limits?</div>
+          <div class="q-arrow">→</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    Built by <a href="#">Shyamal Narayan Patil</a> · IIT (ISM) Dhanbad · Digital Twin v1.0
   </div>
 
   <script>
     const orb = document.getElementById('orb');
     const status = document.getElementById('status');
+    const statusDot = document.getElementById('statusDot');
+    const transcriptBox = document.getElementById('transcriptBox');
+    const transcriptText = document.getElementById('transcriptText');
     let mediaRecorder, chunks = [], recording = false;
 
+    function setStatus(text, mode) {
+      status.textContent = text;
+      statusDot.className = 'status-dot' + (mode ? ' ' + mode : '');
+      orb.className = 'orb' + (mode && ['recording','thinking','speaking'].includes(mode) ? ' ' + mode : '');
+    }
+
     async function askText(question) {
-      setThinking();
+      transcriptBox.classList.add('visible');
+      transcriptText.textContent = question;
+      setStatus('Thinking...', 'thinking');
+      orb.textContent = '⏳';
       try {
         const res = await fetch('/ask-text', {
           method: 'POST',
@@ -126,7 +438,8 @@
         const audioBlob = await res.blob();
         playAudio(audioBlob);
       } catch (err) {
-        reset('Something went wrong. Try again.');
+        setStatus('Something went wrong. Try again.', '');
+        orb.textContent = '🎙️';
       }
     }
 
@@ -144,19 +457,17 @@
         const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
           ? 'audio/webm;codecs=opus'
           : MediaRecorder.isTypeSupported('audio/webm')
-          ? 'audio/webm'
-          : 'audio/ogg';
+          ? 'audio/webm' : 'audio/ogg';
         mediaRecorder = new MediaRecorder(stream, { mimeType });
         chunks = [];
         mediaRecorder.ondataavailable = e => chunks.push(e.data);
         mediaRecorder.onstop = sendAudio;
         mediaRecorder.start();
         recording = true;
-        orb.classList.add('recording');
         orb.textContent = '⏹️';
-        status.textContent = 'Recording... click again to stop';
+        setStatus('Recording... click to stop', 'recording');
       } catch (err) {
-        status.textContent = 'Mic access denied — check browser permissions.';
+        setStatus('Mic access denied — check permissions', '');
       }
     }
 
@@ -166,7 +477,8 @@
         mediaRecorder.stream.getTracks().forEach(t => t.stop());
       }
       recording = false;
-      setThinking();
+      orb.textContent = '⏳';
+      setStatus('Thinking...', 'thinking');
     }
 
     async function sendAudio() {
@@ -179,7 +491,8 @@
         const audioBlob = await res.blob();
         playAudio(audioBlob);
       } catch (err) {
-        reset('Something went wrong. Try again.');
+        setStatus('Something went wrong. Try again.', '');
+        orb.textContent = '🎙️';
       }
     }
 
@@ -187,23 +500,12 @@
       const url = URL.createObjectURL(blob);
       const audio = new Audio(url);
       orb.textContent = '🔊';
-      status.textContent = 'Speaking...';
-      audio.onended = () => reset('Click the orb to ask another question');
+      setStatus('Speaking...', 'speaking');
+      audio.onended = () => {
+        orb.textContent = '🎙️';
+        setStatus('Click the orb to ask another question', 'active');
+      };
       audio.play();
-    }
-
-    function setThinking() {
-      orb.classList.remove('recording');
-      orb.classList.add('thinking');
-      orb.textContent = '⏳';
-      status.textContent = 'Thinking...';
-    }
-
-    function reset(msg) {
-      orb.classList.remove('recording', 'thinking');
-      orb.textContent = '🎙️';
-      status.textContent = msg;
-      recording = false;
     }
 
     orb.addEventListener('click', toggleRecording);
