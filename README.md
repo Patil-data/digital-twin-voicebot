@@ -1,3 +1,12 @@
+---
+title: Digital Twin Voicebot
+emoji: 🎙️
+colorFrom: blue
+colorTo: indigo
+sdk: docker
+pinned: false
+---
+
 # 🎙️ Digital Twin Voicebot — Shyamal Narayan Patil
 
 A voice-to-voice AI that answers interview questions exactly as I would — in real-time, from any browser, zero setup required.
