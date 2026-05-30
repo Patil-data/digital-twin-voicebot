@@ -37,6 +37,9 @@ Mic Input → Groq Whisper → Llama 3.3 70B → gTTS → Audio Response
 ---
 
 ## Project Structure
+
+
+```text
 digital-twin-voicebot/
 ├── app/
 │   ├── main.py          # FastAPI routes
