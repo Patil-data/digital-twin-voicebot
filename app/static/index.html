@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digital Twin — Shyamal Patil</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      background: #0f0f0f;
+      color: #f0f0f0;
+      font-family: 'Segoe UI', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    h1 { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    p.subtitle {
+      color: #888;
+      font-size: 0.95rem;
+      margin-bottom: 2.5rem;
+      text-align: center;
+    }
+    .orb {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: radial-gradient(circle, #4f8ef7, #1a1aff);
+      box-shadow: 0 0 40px #4f8ef7aa;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem;
+      user-select: none;
+    }
+    .orb.recording {
+      background: radial-gradient(circle, #f74f4f, #cc0000);
+      box-shadow: 0 0 60px #f74f4fcc;
+      transform: scale(1.1);
+    }
+    .orb.thinking {
+      background: radial-gradient(circle, #f7c94f, #cc8800);
+      box-shadow: 0 0 50px #f7c94faa;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1.05); }
+      50% { transform: scale(1.12); }
+    }
+    #status {
+      margin-top: 1.5rem;
+      font-size: 0.95rem;
+      color: #aaa;
+      min-height: 1.5rem;
+      text-align: center;
+    }
+    .questions {
+      margin-top: 3rem;
+      max-width: 520px;
+      width: 100%;
+    }
+    .questions h2 {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #555;
+      margin-bottom: 1rem;
+    }
+    .questions ul {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+    .questions ul li {
+      background: #1a1a1a;
+      border: 1px solid #2a2a2a;
+      border-radius: 8px;
+      padding: 0.65rem 1rem;
+      font-size: 0.88rem;
+      color: #bbb;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .questions ul li:hover { border-color: #4f8ef7; color: #fff; }
+    .questions ul li.active { border-color: #f7c94f; color: #fff; }
+  </style>
+</head>
+<body>
+  <h1>Hey, I'm Shyamal 👋</h1>
+  <p class="subtitle">Hold the orb to speak — or click a question below.</p>
+
+  <div class="orb" id="orb">🎙️</div>
+  <div id="status">Press and hold to ask a question</div>
+
+  <div class="questions">
+    <h2>Or click a question</h2>
+    <ul>
+      <li onclick="askText('What should I know about your life story?')">What should I know about your life story?</li>
+      <li onclick="askText('What is your number one superpower?')">What's your #1 superpower?</li>
+      <li onclick="askText('What are your top three areas to grow in?')">What are your top 3 areas to grow in?</li>
+      <li onclick="askText('What misconception do coworkers have about you?')">What misconception do coworkers have about you?</li>
+      <li onclick="askText('How do you push your limits?')">How do you push your limits?</li>
+    </ul>
+  </div>
+
+  <script>
+    const orb = document.getElementById('orb');
+    const status = document.getElementById('status');
+    let mediaRecorder, chunks = [];
+
+    async function askText(question) {
+      setThinking();
+      try {
+        const res = await fetch('/ask-text', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ question })
+        });
+        if (!res.ok) throw new Error('Server error');
+        const audioBlob = await res.blob();
+        playAudio(audioBlob);
+      } catch (err) {
+        reset('Something went wrong. Try again.');
+      }
+    }
+
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream, { mimeType: 'audio/webm' });
+        chunks = [];
+        mediaRecorder.ondataavailable = e => chunks.push(e.data);
+        mediaRecorder.onstop = sendAudio;
+        mediaRecorder.start();
+        orb.classList.add('recording');
+        orb.textContent = '⏹️';
+        status.textContent = 'Listening... release to send';
+      } catch (err) {
+        status.textContent = 'Mic access denied — check browser permissions.';
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.stop();
+        mediaRecorder.stream.getTracks().forEach(t => t.stop());
+      }
+      setThinking();
+    }
+
+    async function sendAudio() {
+      const blob = new Blob(chunks, { type: 'audio/webm' });
+      const form = new FormData();
+      form.append('audio', blob, 'audio.webm');
+      try {
+        const res = await fetch('/ask', { method: 'POST', body: form });
+        if (!res.ok) throw new Error('Server error');
+        const audioBlob = await res.blob();
+        playAudio(audioBlob);
+      } catch (err) {
+        reset('Something went wrong. Try again.');
+      }
+    }
+
+    function playAudio(blob) {
+      const url = URL.createObjectURL(blob);
+      const audio = new Audio(url);
+      orb.textContent = '🔊';
+      status.textContent = 'Speaking...';
+      audio.onended = () => reset('Press and hold to ask again');
+      audio.play();
+    }
+
+    function setThinking() {
+      orb.classList.remove('recording');
+      orb.classList.add('thinking');
+      orb.textContent = '⏳';
+      status.textContent = 'Thinking...';
+    }
+
+    function reset(msg) {
+      orb.classList.remove('recording', 'thinking');
+      orb.textContent = '🎙️';
+      status.textContent = msg;
+    }
+
+    orb.addEventListener('mousedown', startRecording);
+    orb.addEventListener('mouseup', stopRecording);
+    orb.addEventListener('touchstart', e => { e.preventDefault(); startRecording(); });
+    orb.addEventListener('touchend', e => { e.preventDefault(); stopRecording(); });
+  </script>
+</body>
+</html>
