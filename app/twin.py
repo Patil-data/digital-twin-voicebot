@@ -43,7 +43,7 @@ def match_question(transcript: str) -> str:
         return "Could you repeat that? I did not catch your question."
 
     response = client.chat.completions.create(
-        model="llama3-8b-8192",
+        model="llama-3.3-70b-versatile",
         messages=[
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": transcript}
