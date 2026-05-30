@@ -4,3 +4,5 @@ python-multipart
 groq
 gtts
 pydub
+edge-tts
+asyncio
