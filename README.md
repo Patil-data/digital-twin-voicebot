@@ -8,5 +8,3 @@ pinned: false
 ---
 
 # Digital Twin — Shyamal Narayan Patil
-
-A voice-to-voice AI digital twin deployed on Hugging Face Spaces.
