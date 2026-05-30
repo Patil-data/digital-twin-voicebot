@@ -5,7 +5,7 @@ import io
 async def _synthesize(text: str) -> bytes:
     communicate = edge_tts.Communicate(
         text=text,
-        voice="en-US-GuyNeural",
+        voice="en-US-JennyNeural",
         rate="+5%"
     )
     buffer = io.BytesIO()
