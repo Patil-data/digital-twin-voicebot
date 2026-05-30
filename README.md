@@ -37,17 +37,20 @@ Mic Input → Groq Whisper → Llama 3.3 70B → gTTS → Audio Response
 ---
 
 ## Project Structure
+
+```text
 digital-twin-voicebot/
 ├── app/
-│   ├── main.py            # FastAPI routes
-│   ├── twin.py            # Persona, system prompt, LLM logic
-│   ├── asr_handler.py     # Speech-to-text via Groq Whisper
-│   ├── tts_handler.py     # Text-to-speech via gTTS
+│   ├── main.py          # FastAPI routes
+│   ├── twin.py          # Persona, system prompt, LLM logic
+│   ├── asr_handler.py   # Speech-to-text via Groq Whisper
+│   ├── tts_handler.py   # Text-to-speech via gTTS
 │   └── static/
-│       └── index.html     # Frontend UI
-├── Dockerfile             # Container config for HF Spaces
-├── requirements.txt       # Python dependencies
+│       └── index.html   # Frontend UI
+├── Dockerfile           # Container config for HF Spaces
+├── requirements.txt     # Python dependencies
 └── README.md
+
 ---
 
 ## Run Locally
