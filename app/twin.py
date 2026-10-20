@@ -100,13 +100,20 @@ def match_question(transcript: str) -> str:
     if not transcript or len(transcript.strip()) < 3:
         return "Sorry, could you say that again?"
 
-    response = client.chat.completions.create(
-        model="llama-3.3-70b-versatile",
-        messages=[
-            {"role": "system", "content": SYSTEM_PROMPT},
-            {"role": "user", "content": transcript}
-        ],
-        max_tokens=150,
+    try:
+        response = client.chat.completions.create(
+            model="openai/gpt-oss-120b",
+            messages=[
+                {"role": "system", "content": SYSTEM_PROMPT},
+                {"role": "user", "content": transcript}
+            ],
+            max_tokens=600,
+            temperature=0.7,
+            reasoning_effort="low"
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        print(f"[LLM] error: {e}")
+        return "Sorry, I had trouble answering that. Could you ask again?"
         temperature=0.7
-    )
-    return response.choices[0].message.content.strip()
+   
